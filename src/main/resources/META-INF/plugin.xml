@@ -34,9 +34,21 @@
   ]]></change-notes>
   
   <depends>com.intellij.modules.platform</depends>
-  
+
+
   <extensions defaultExtensionNs="com.intellij">
+    <applicationService
+            serviceImplementation="com.chylex.intellij.inspectionlens.settings.Settings"/>
+
+    <applicationConfigurable
+            parentId="tools"
+            instance="com.chylex.intellij.inspectionlens.settings.Configurable"
+            id="org.intellij.sdk.settings.AppSettingsConfigurable"
+            displayName="Inspection Lens"/>
+
     <applicationService serviceImplementation="com.chylex.intellij.inspectionlens.InspectionLensPluginDisposableService" />
+
+
   </extensions>
   
   <applicationListeners>
