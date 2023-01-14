@@ -2,7 +2,7 @@
   <id>com.chylex.intellij.inspectionlens</id>
   <name>Inspection Lens</name>
   <vendor url="https://chylex.com">chylex</vendor>
-  
+
   <description><![CDATA[
     Shows errors, warnings, and other inspection highlights inline.
     <br><br>
@@ -15,7 +15,7 @@
     <br><br>
     Inspired by <a href="https://marketplace.visualstudio.com/items?itemName=usernamehw.errorlens">Error Lens</a> for VS Code, and <a href="https://plugins.jetbrains.com/plugin/17302-inlineerror">Inline Error</a> for IntelliJ Platform.
   ]]></description>
-  
+
   <change-notes><![CDATA[
     <b>Version 1.1.1</b>
     <ul>
@@ -32,9 +32,8 @@
       <li>Initial version with support for IntelliJ 2022.2 and newer.</li>
     </ul>
   ]]></change-notes>
-  
-  <depends>com.intellij.modules.platform</depends>
 
+  <depends>com.intellij.modules.platform</depends>
 
   <extensions defaultExtensionNs="com.intellij">
     <applicationService
@@ -46,15 +45,19 @@
             id="org.intellij.sdk.settings.AppSettingsConfigurable"
             displayName="Inspection Lens"/>
 
+    <checkinHandlerFactory
+            implementation="com.chylex.intellij.inspectionlens.checkin.InspectionLensCheckinHandlerFactory"
+            id="commit-checklist"
+            order="last"/>
+
     <applicationService serviceImplementation="com.chylex.intellij.inspectionlens.InspectionLensPluginDisposableService" />
 
-
   </extensions>
-  
+
   <applicationListeners>
     <listener class="com.chylex.intellij.inspectionlens.InspectionLensPluginListener" topic="com.intellij.ide.plugins.DynamicPluginListener" />
   </applicationListeners>
-  
+
   <projectListeners>
     <listener class="com.chylex.intellij.inspectionlens.LensFileEditorListener" topic="com.intellij.openapi.fileEditor.FileEditorManagerListener" />
   </projectListeners>

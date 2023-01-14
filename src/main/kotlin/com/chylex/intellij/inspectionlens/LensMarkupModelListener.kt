@@ -17,8 +17,8 @@ import com.jetbrains.rd.util.lifetime.intersect
 /**
  * Listens for inspection highlights and reports them to [EditorInlayLensManager].
  */
-class LensMarkupModelListener private constructor(editor: Editor) : MarkupModelListener {
-	private val lens = EditorInlayLensManager.getOrCreate(editor)
+class LensMarkupModelListener private constructor(editor: Editor, onlyVcs: Boolean) : MarkupModelListener {
+	private val lens = EditorInlayLensManager.getOrCreate(editor, onlyVcs)
 	
 	override fun afterAdded(highlighter: RangeHighlighterEx) {
 		showIfValid(highlighter)
@@ -93,14 +93,14 @@ class LensMarkupModelListener private constructor(editor: Editor) : MarkupModelL
 		 * 
 		 * The [LensMarkupModelListener] will be disposed when either the [TextEditor] is disposed, or via [InspectionLensPluginDisposableService] when the plugin is unloaded.
 		 */
-		fun install(textEditor: TextEditor) {
+		fun install(textEditor: TextEditor, onlyVcs: Boolean) {
 			val editor = textEditor.editor
 			val markupModel = DocumentMarkupModel.forDocument(editor.document, editor.project, false)
 			if (markupModel is MarkupModelEx) {
 				val pluginLifetime = ApplicationManager.getApplication().getService(InspectionLensPluginDisposableService::class.java).createLifetime()
 				val editorLifetime = textEditor.createLifetime()
 				
-				val listener = LensMarkupModelListener(editor)
+				val listener = LensMarkupModelListener(editor, onlyVcs)
 				markupModel.addMarkupModelListener(pluginLifetime.intersect(editorLifetime).createNestedDisposable(), listener)
 				listener.showAllValid(markupModel.allHighlighters)
 			}

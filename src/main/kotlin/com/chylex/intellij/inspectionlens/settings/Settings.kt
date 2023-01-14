@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Nullable
 
 @State(name = "com.chylex.intellij.inspectionlens.Settings", storages = [Storage("inspection-lens.xml")])
 class Settings : PersistentStateComponent<Settings> {
+    var isOnlyVcs: Boolean = true
 
     @Nullable
     override fun getState(): Settings {
