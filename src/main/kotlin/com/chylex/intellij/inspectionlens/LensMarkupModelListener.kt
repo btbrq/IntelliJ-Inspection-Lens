@@ -17,35 +17,35 @@ import com.jetbrains.rd.util.lifetime.intersect
 /**
  * Listens for inspection highlights and reports them to [EditorInlayLensManager].
  */
-class LensMarkupModelListener private constructor(editor: Editor, onlyVcs: Boolean) : MarkupModelListener {
-	private val lens = EditorInlayLensManager.getOrCreate(editor, onlyVcs)
-	
+class LensMarkupModelListener private constructor(editor: Editor, onlyVcs: Boolean, levels: List<LensSeverity>) : MarkupModelListener {
+	private val lens = EditorInlayLensManager.getOrCreate(editor, onlyVcs, levels)
+
 	override fun afterAdded(highlighter: RangeHighlighterEx) {
 		showIfValid(highlighter)
 	}
-	
+
 	override fun attributesChanged(highlighter: RangeHighlighterEx, renderersChanged: Boolean, fontStyleOrColorChanged: Boolean) {
 		showIfValid(highlighter)
 	}
-	
+
 	override fun beforeRemoved(highlighter: RangeHighlighterEx) {
 		lens.hide(highlighter)
 	}
-	
+
 	private fun showIfValid(highlighter: RangeHighlighter) {
 		runWithHighlighterIfValid(highlighter, lens::show, ::showAsynchronously)
 	}
-	
+
 	private fun showAllValid(highlighters: Array<RangeHighlighter>) {
 		val immediateHighlighters = mutableListOf<HighlighterWithInfo>()
-		
+
 		for (highlighter in highlighters) {
 			runWithHighlighterIfValid(highlighter, immediateHighlighters::add, ::showAsynchronously)
 		}
-		
+
 		lens.showAll(immediateHighlighters)
 	}
-	
+
 	private fun showAsynchronously(highlighterWithInfo: HighlighterWithInfo.Async) {
 		highlighterWithInfo.requestDescription {
 			if (highlighterWithInfo.highlighter.isValid && highlighterWithInfo.hasDescription) {
@@ -61,24 +61,24 @@ class LensMarkupModelListener private constructor(editor: Editor, onlyVcs: Boole
 			}
 		}
 	}
-	
+
 	companion object {
 		private val MINIMUM_SEVERITY = HighlightSeverity.TEXT_ATTRIBUTES.myVal + 1
-		
+
 		private fun getHighlightInfoIfValid(highlighter: RangeHighlighter): HighlightInfo? {
 			return if (highlighter.isValid)
 				HighlightInfo.fromRangeHighlighter(highlighter)?.takeIf { it.severity.myVal >= MINIMUM_SEVERITY }
 			else
 				null
 		}
-		
+
 		private inline fun runWithHighlighterIfValid(highlighter: RangeHighlighter, actionForImmediate: (HighlighterWithInfo) -> Unit, actionForAsync: (HighlighterWithInfo.Async) -> Unit) {
 			val info = getHighlightInfoIfValid(highlighter)
 			if (info != null) {
 				processHighlighterWithInfo(HighlighterWithInfo.from(highlighter, info), actionForImmediate, actionForAsync)
 			}
 		}
-		
+
 		private inline fun processHighlighterWithInfo(highlighterWithInfo: HighlighterWithInfo, actionForImmediate: (HighlighterWithInfo) -> Unit, actionForAsync: (HighlighterWithInfo.Async) -> Unit) {
 			if (highlighterWithInfo is HighlighterWithInfo.Async) {
 				actionForAsync(highlighterWithInfo)
@@ -87,20 +87,19 @@ class LensMarkupModelListener private constructor(editor: Editor, onlyVcs: Boole
 				actionForImmediate(highlighterWithInfo)
 			}
 		}
-		
+
 		/**
 		 * Attaches a new [LensMarkupModelListener] to the document model of the provided [TextEditor], and reports all existing inspection highlights to [EditorInlayLensManager].
-		 * 
+		 *
 		 * The [LensMarkupModelListener] will be disposed when either the [TextEditor] is disposed, or via [InspectionLensPluginDisposableService] when the plugin is unloaded.
 		 */
-		fun install(textEditor: TextEditor, onlyVcs: Boolean) {
+		fun install(textEditor: TextEditor, onlyVcs: Boolean, levels: List<LensSeverity>) {
 			val editor = textEditor.editor
 			val markupModel = DocumentMarkupModel.forDocument(editor.document, editor.project, false)
 			if (markupModel is MarkupModelEx) {
 				val pluginLifetime = ApplicationManager.getApplication().getService(InspectionLensPluginDisposableService::class.java).createLifetime()
 				val editorLifetime = textEditor.createLifetime()
-				
-				val listener = LensMarkupModelListener(editor, onlyVcs)
+				val listener = LensMarkupModelListener(editor, onlyVcs, levels)
 				markupModel.addMarkupModelListener(pluginLifetime.intersect(editorLifetime).createNestedDisposable(), listener)
 				listener.showAllValid(markupModel.allHighlighters)
 			}

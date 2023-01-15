@@ -2,6 +2,7 @@ package com.chylex.intellij.inspectionlens
 
 import com.intellij.codeInsight.daemon.impl.AsyncDescriptionSupplier
 import com.intellij.codeInsight.daemon.impl.HighlightInfo
+import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.editor.markup.RangeHighlighter
 import java.util.function.Consumer
 
@@ -11,6 +12,10 @@ open class HighlighterWithInfo private constructor(val highlighter: RangeHighlig
 	
 	operator fun component1() = highlighter
 	operator fun component2() = info
+
+	fun severity(): HighlightSeverity {
+		return info.severity
+	}
 	
 	class Async(highlighter: RangeHighlighter, info: HighlightInfo, private val provider: AsyncDescriptionSupplier) : HighlighterWithInfo(highlighter, info) {
 		fun requestDescription(callback: Consumer<String?>) {

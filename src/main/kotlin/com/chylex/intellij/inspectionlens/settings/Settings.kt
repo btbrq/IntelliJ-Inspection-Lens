@@ -1,5 +1,6 @@
 package com.chylex.intellij.inspectionlens.settings
 
+import com.chylex.intellij.inspectionlens.LensSeverity
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.State
@@ -11,6 +12,11 @@ import org.jetbrains.annotations.Nullable
 @State(name = "com.chylex.intellij.inspectionlens.Settings", storages = [Storage("inspection-lens.xml")])
 class Settings : PersistentStateComponent<Settings> {
     var isOnlyVcs: Boolean = true
+    var showError: Boolean = true
+    var showWarning: Boolean = true
+    var showWeakWarning: Boolean = true
+    var showOther: Boolean = true
+    var showTypo: Boolean = true
 
     @Nullable
     override fun getState(): Settings {
@@ -24,5 +30,22 @@ class Settings : PersistentStateComponent<Settings> {
     companion object {
         val instance: Settings
             get() = ApplicationManager.getApplication().getService(Settings::class.java)
+    }
+
+    fun getLevels(): List<LensSeverity> {
+        var levels = mutableListOf<LensSeverity>()
+        addLevelIfTrue(levels, showError, LensSeverity.ERROR)
+        addLevelIfTrue(levels, showError, LensSeverity.SERVER_PROBLEM)
+        addLevelIfTrue(levels, showWarning, LensSeverity.WARNING)
+        addLevelIfTrue(levels, showWeakWarning, LensSeverity.WEAK_WARNING)
+        addLevelIfTrue(levels, showTypo, LensSeverity.TYPO)
+        addLevelIfTrue(levels, showOther, LensSeverity.OTHER)
+        return levels
+    }
+
+    private fun addLevelIfTrue(levels: MutableList<LensSeverity>, levelValue: Boolean, level: LensSeverity) {
+        if (levelValue) {
+            levels.add(level)
+        }
     }
 }
