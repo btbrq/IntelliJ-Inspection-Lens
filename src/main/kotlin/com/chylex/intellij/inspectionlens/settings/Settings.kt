@@ -35,6 +35,12 @@ class Settings : PersistentStateComponent<Settings> {
             get() = ApplicationManager.getApplication().getService(Settings::class.java)
     }
 
+    fun isFileSupported(extension: String?): Boolean {
+        val included = includedExtensions.isEmpty() || includedExtensions.any { it == extension }
+        val notExcluded = excludedExtensions.isEmpty() || excludedExtensions.none { it == extension }
+        return included && notExcluded
+    }
+
     fun getLevels(): List<LensSeverity> {
         val levels = mutableListOf<LensSeverity>()
         addLevelIfTrue(levels, showError, LensSeverity.ERROR)

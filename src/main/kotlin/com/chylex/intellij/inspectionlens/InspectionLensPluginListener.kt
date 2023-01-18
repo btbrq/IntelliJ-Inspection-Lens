@@ -29,10 +29,12 @@ class InspectionLensPluginListener : DynamicPluginListener {
 	}
 
 	override fun pluginLoaded(pluginDescriptor: IdeaPluginDescriptor) {
+		val settings: Settings = Settings.instance
 		if (pluginDescriptor.pluginId.idString == PLUGIN_ID) {
 			ProjectManager.getInstanceIfCreated()?.forEachEditor {
-//            todo check file extension
-                LensMarkupModelListener.install(it, isVcsEnabled(it), Settings.instance.getLevels())
+				if (settings.isFileSupported(it.file.extension)) {
+					LensMarkupModelListener.install(it, isVcsEnabled(it), Settings.instance.getLevels())
+				}
 			}
 		}
 	}

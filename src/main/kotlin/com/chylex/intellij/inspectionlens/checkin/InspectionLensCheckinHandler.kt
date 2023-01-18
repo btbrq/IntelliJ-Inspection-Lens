@@ -15,14 +15,16 @@ import com.intellij.openapi.vfs.VirtualFile
 class InspectionLensCheckinHandler(private val panel: CheckinProjectPanel) : CheckinHandler() {
     private var fileChanges: MutableMap<Editor, Boolean>? = null
     override fun beforeCheckin(): ReturnResult {
-        if (Settings.instance.isOnlyVcs) {
+        val settings = Settings.instance
+        if (settings.isOnlyVcs) {
             val fileEditorManager = FileEditorManager.getInstance(panel.project)
 
             fileChanges = mutableMapOf()
             for (editor in fileEditorManager.allEditors.filterIsInstance<TextEditor>().filter { wasCommitted(it.file) }) {
-//            todo check file extension
-                val fullyCommitted = isFullyCommitted(editor)
-                fileChanges?.put(editor.editor, fullyCommitted)
+                if (settings.isFileSupported(editor.file.extension)) {
+                    val fullyCommitted = isFullyCommitted(editor)
+                    fileChanges?.put(editor.editor, fullyCommitted)
+                }
             }
         }
         return ReturnResult.COMMIT

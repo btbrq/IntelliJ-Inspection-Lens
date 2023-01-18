@@ -12,10 +12,10 @@ import com.intellij.openapi.vfs.VirtualFile
  */
 class LensFileEditorListener : FileEditorManagerListener {
     override fun fileOpenedSync(source: FileEditorManager, file: VirtualFile, editorsWithProviders: MutableList<FileEditorWithProvider>) {
+        val settings: Settings = Settings.instance
         for (editorWrapper in editorsWithProviders) {
             val fileEditor = editorWrapper.fileEditor
-            if (fileEditor is TextEditor) {
-//				todo check file extension
+            if (fileEditor is TextEditor && settings.isFileSupported(fileEditor.file.extension)) {
                 LensMarkupModelListener.install(fileEditor, isVcsEnabled(fileEditor), Settings.instance.getLevels())
             }
         }
