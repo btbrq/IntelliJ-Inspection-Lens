@@ -8,6 +8,7 @@ import com.intellij.openapi.components.Storage
 import com.intellij.util.xmlb.XmlSerializerUtil
 import org.jetbrains.annotations.NotNull
 import org.jetbrains.annotations.Nullable
+import java.util.Collections.emptyList
 
 @State(name = "com.chylex.intellij.inspectionlens.Settings", storages = [Storage("inspection-lens.xml")])
 class Settings : PersistentStateComponent<Settings> {
@@ -17,6 +18,8 @@ class Settings : PersistentStateComponent<Settings> {
     var showWeakWarning: Boolean = true
     var showOther: Boolean = true
     var showTypo: Boolean = true
+    var includedExtensions: List<String> = emptyList()
+    var excludedExtensions: List<String> = emptyList()
 
     @Nullable
     override fun getState(): Settings {
@@ -33,7 +36,7 @@ class Settings : PersistentStateComponent<Settings> {
     }
 
     fun getLevels(): List<LensSeverity> {
-        var levels = mutableListOf<LensSeverity>()
+        val levels = mutableListOf<LensSeverity>()
         addLevelIfTrue(levels, showError, LensSeverity.ERROR)
         addLevelIfTrue(levels, showError, LensSeverity.SERVER_PROBLEM)
         addLevelIfTrue(levels, showWarning, LensSeverity.WARNING)

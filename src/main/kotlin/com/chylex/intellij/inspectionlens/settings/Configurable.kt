@@ -14,23 +14,30 @@ class Configurable : Configurable {
     }
 
     override fun apply() {
-        settings.isOnlyVcs = component.onlyVcs!!.isSelected
-        settings.showError = component.showError!!.isSelected
-        settings.showWarning = component.showWarning!!.isSelected
-        settings.showWeakWarning = component.showWeakWarning!!.isSelected
-        settings.showTypo = component.showTypo!!.isSelected
-        settings.showOther = component.showOther!!.isSelected
+        settings.isOnlyVcs = component.isOnlyVcs()
+        settings.showError = component.showError()
+        settings.showWarning = component.showWarning()
+        settings.showWeakWarning = component.showWeakWarning()
+        settings.showTypo = component.showTypo()
+        settings.showOther = component.showOther()
+        settings.includedExtensions = component.getIncludedExtensions()
+        settings.excludedExtensions = component.getExcludedExtensions()
+        println("included ${component.getIncludedExtensions()}")
+        println("excluded ${component.getExcludedExtensions()}")
+
 //on apply reinstall all current editors
 //        when installing editors - check if only VCS is selected
     }
 
     override fun reset() {
-        component.onlyVcs!!.isSelected = Settings.instance.isOnlyVcs
-        component.showError!!.isSelected = Settings.instance.showError
-        component.showWarning!!.isSelected = Settings.instance.showWarning
-        component.showWeakWarning!!.isSelected = Settings.instance.showWeakWarning
-        component.showTypo!!.isSelected = Settings.instance.showTypo
-        component.showOther!!.isSelected = Settings.instance.showOther
+        component.setOnlyVcs(Settings.instance.isOnlyVcs)
+        component.setShowError(Settings.instance.showError)
+        component.setShowWarning(Settings.instance.showWarning)
+        component.setShowWeakWarning(Settings.instance.showWeakWarning)
+        component.setShowTypo(Settings.instance.showTypo)
+        component.setShowOther(Settings.instance.showOther)
+        component.setIncludedExtensions(Settings.instance.includedExtensions)
+        component.setExcludedExtensions(Settings.instance.excludedExtensions)
     }
 
     override fun isModified(): Boolean {
