@@ -16,18 +16,9 @@ class LensFileEditorListener : FileEditorManagerListener {
         for (editorWrapper in editorsWithProviders) {
             val fileEditor = editorWrapper.fileEditor
             if (fileEditor is TextEditor && settings.isFileSupported(fileEditor.file.extension)) {
-                LensMarkupModelListener.install(fileEditor, isVcsEnabled(fileEditor), Settings.instance.getLevels())
+                LensMarkupModelListener.install(fileEditor, settings.isOnlyVcs, settings.getLevels())
             }
         }
     }
 
-	private fun isVcsEnabled(fileEditor: TextEditor): Boolean {
-		println("settings vcs ${Settings.instance.isOnlyVcs}")
-		return if (Settings.instance.isOnlyVcs) isVcsForProjectAndFile(fileEditor) else false
-    }
-
-    private fun isVcsForProjectAndFile(fileEditor: TextEditor): Boolean {
-        //todo check if project is under vcs and file is tracked
-        return true
-    }
 }

@@ -54,13 +54,4 @@ class InspectionLensCheckinHandler(private val panel: CheckinProjectPanel) : Che
         return panel.virtualFiles.any { it == file }
     }
 
-    private fun isVcsEnabled(fileEditor: TextEditor): Boolean {
-        println("settings vcs ${Settings.instance.isOnlyVcs}")
-        return if (Settings.instance.isOnlyVcs) isVcsForProjectAndFile(fileEditor) else false
-    }
-
-    private fun isVcsForProjectAndFile(fileEditor: TextEditor) : Boolean {
-        //todo check if project is under vcs and file is tracked
-        return true
-    }
 }

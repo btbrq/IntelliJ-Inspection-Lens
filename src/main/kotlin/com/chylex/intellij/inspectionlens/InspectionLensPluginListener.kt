@@ -33,7 +33,7 @@ class InspectionLensPluginListener : DynamicPluginListener {
 		if (pluginDescriptor.pluginId.idString == PLUGIN_ID) {
 			ProjectManager.getInstanceIfCreated()?.forEachEditor {
 				if (settings.isFileSupported(it.file.extension)) {
-					LensMarkupModelListener.install(it, isVcsEnabled(it), Settings.instance.getLevels())
+					LensMarkupModelListener.install(it, settings.isOnlyVcs, settings.getLevels())
 				}
 			}
 		}
@@ -47,13 +47,4 @@ class InspectionLensPluginListener : DynamicPluginListener {
 		}
 	}
 
-	private fun isVcsEnabled(fileEditor: TextEditor): Boolean {
-		println("settings vcs ${Settings.instance.isOnlyVcs}")
-		return if (Settings.instance.isOnlyVcs) isVcsForProjectAndFile(fileEditor) else false
-	}
-
-	private fun isVcsForProjectAndFile(fileEditor: TextEditor) : Boolean {
-		//todo check if project is under vcs and file is tracked
-		return true
-	}
 }
