@@ -1,5 +1,6 @@
 package com.chylex.intellij.inspectionlens.settings.ui
 
+import com.chylex.intellij.inspectionlens.InspectionLensBundle.message
 import com.chylex.intellij.inspectionlens.settings.Settings
 import com.intellij.ui.IdeBorderFactory
 import com.intellij.ui.components.JBCheckBox
@@ -17,15 +18,15 @@ class JPanelOptions(settings: Settings) : JPanel() {
 
     init {
         layout = BoxLayout(this, BoxLayout.PAGE_AXIS)
-        val titledBorder: TitledBorder = IdeBorderFactory.createTitledBorder("Options")
+        val titledBorder: TitledBorder = IdeBorderFactory.createTitledBorder(message("options.title"))
         border = titledBorder
 
-        onlyVcs = JBCheckBox("Use only for changed code (only if VCS configured)", settings.isOnlyVcs)
-        showError = JBCheckBox("Show ERROR level problems", settings.showError)
-        showWarning = JBCheckBox("Show WARNING level problems", settings.showWarning)
-        showWeakWarning = JBCheckBox("Show WEAK-WARNING level problems", settings.showWeakWarning)
-        showOther = JBCheckBox("Show other level problems", settings.showOther)
-        showTypo = JBCheckBox("Show TYPO level problems", settings.showTypo)
+        onlyVcs = JBCheckBox(message("options.onlyVcs"), settings.isOnlyVcs)
+        showError = JBCheckBox(message("options.showError"), settings.showError)
+        showWarning = JBCheckBox(message("options.showWarning"), settings.showWarning)
+        showWeakWarning = JBCheckBox(message("options.showWeakWarning"), settings.showWeakWarning)
+        showTypo = JBCheckBox(message("options.showTypo"), settings.showTypo)
+        showOther = JBCheckBox(message("options.showOther"), settings.showOther)
         add(onlyVcs)
         add(showError)
         add(showWarning)

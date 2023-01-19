@@ -1,5 +1,6 @@
 package com.chylex.intellij.inspectionlens.settings
 
+import com.chylex.intellij.inspectionlens.InspectionLensBundle.message
 import com.chylex.intellij.inspectionlens.settings.ui.JPanelSettings
 import com.intellij.openapi.options.Configurable
 import javax.swing.JComponent
@@ -45,7 +46,7 @@ class Configurable : Configurable {
     }
 
     override fun getDisplayName(): String {
-        return "Inspection Lens"
+        return message("plugin.name")
     }
 
 }
