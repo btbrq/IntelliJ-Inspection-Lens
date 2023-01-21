@@ -12,7 +12,7 @@ import java.util.Collections.emptyList
 
 @State(name = "com.chylex.intellij.inspectionlens.Settings", storages = [Storage("inspection-lens.xml")])
 class Settings : PersistentStateComponent<Settings> {
-    var isOnlyVcs: Boolean = true
+    var isOnlyVcs: Boolean = false
     var showError: Boolean = true
     var showWarning: Boolean = true
     var showWeakWarning: Boolean = true

@@ -7,8 +7,8 @@ plugins {
 	id("org.jetbrains.intellij") version "1.9.0"
 }
 
-group = "com.chylex.intellij.inspectionlens"
-version = "1.1.1"
+group = "com.chylex.intellij.inspectionlensconfigurable"
+version = "0.0.1"
 
 repositories {
 	mavenCentral()
