@@ -1,5 +1,5 @@
 <idea-plugin>
-  <id>com.chylex.intellij.inspectionlens</id>
+  <id>com.chylex.intellij.inspectionlensconfigurable</id>
   <name>Inspection Lens Configurable</name>
   <vendor url="https://chylex.com">chylex</vendor>
 

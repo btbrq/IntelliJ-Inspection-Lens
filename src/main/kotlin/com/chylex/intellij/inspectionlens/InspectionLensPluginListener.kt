@@ -15,8 +15,7 @@ import com.intellij.openapi.project.ProjectManager
  */
 class InspectionLensPluginListener : DynamicPluginListener {
 	companion object {
-		private const val PLUGIN_ID = "com.chylex.intellij.inspectionlens"
-
+		private const val PLUGIN_ID = "com.chylex.intellij.inspectionlensconfigurable"
 		private inline fun ProjectManager.forEachEditor(action: (TextEditor) -> Unit) {
 			for (project in this.openProjects.filterNot { it.isDisposed }) {
 				val fileEditorManager = FileEditorManager.getInstance(project)
@@ -31,20 +30,33 @@ class InspectionLensPluginListener : DynamicPluginListener {
 	override fun pluginLoaded(pluginDescriptor: IdeaPluginDescriptor) {
 		val settings: Settings = Settings.instance
 		if (pluginDescriptor.pluginId.idString == PLUGIN_ID) {
-			ProjectManager.getInstanceIfCreated()?.forEachEditor {
-				if (settings.isFileSupported(it.file.extension)) {
-					LensMarkupModelListener.install(it, settings.isOnlyVcs, settings.getLevels())
-				}
+			installListeners(settings)
+		}
+	}
+
+	private fun installListeners(settings: Settings) {
+		ProjectManager.getInstanceIfCreated()?.forEachEditor {
+			if (settings.isFileSupported(it.file.extension)) {
+				LensMarkupModelListener.install(it, settings.isOnlyVcs, settings.getLevels())
 			}
 		}
 	}
 
 	override fun beforePluginUnload(pluginDescriptor: IdeaPluginDescriptor, isUpdate: Boolean) {
 		if (pluginDescriptor.pluginId.idString == PLUGIN_ID) {
-			ProjectManager.getInstanceIfCreated()?.forEachEditor {
-				EditorInlayLensManager.remove(it.editor)
-			}
+			removeListeners()
 		}
+	}
+
+	private fun removeListeners() {
+		ProjectManager.getInstanceIfCreated()?.forEachEditor {
+			EditorInlayLensManager.remove(it.editor)
+		}
+	}
+
+	fun reload() {
+		removeListeners()
+		installListeners(Settings.instance)
 	}
 
 }

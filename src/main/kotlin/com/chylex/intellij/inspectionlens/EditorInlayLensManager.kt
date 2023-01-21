@@ -43,11 +43,8 @@ class EditorInlayLensManager private constructor(private val editor: Editor, pri
 				val psiFile = PsiDocumentManager.getInstance(editor.project!!).getPsiFile(editor.document)
 				val changedRangesInfo = VcsFacadeImpl.getInstance().getChangedTextRanges(editor.project!!, psiFile!!)
 				if (fullyCommitted || changedRangesInfo.isEmpty()) {
-					println("is empty")
 					manager.hideAll()
 				} else {
-					println("ranges: $changedRangesInfo")
-
 					val iterator = manager.inlays.keys
 							.filter {
 								!notCommitted(it.startOffset, it.endOffset, changedRangesInfo)

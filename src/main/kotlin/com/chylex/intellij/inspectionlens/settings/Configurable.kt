@@ -1,6 +1,7 @@
 package com.chylex.intellij.inspectionlens.settings
 
 import com.chylex.intellij.inspectionlens.InspectionLensBundle.message
+import com.chylex.intellij.inspectionlens.InspectionLensPluginListener
 import com.chylex.intellij.inspectionlens.settings.ui.JPanelSettings
 import com.intellij.openapi.options.Configurable
 import javax.swing.JComponent
@@ -23,11 +24,8 @@ class Configurable : Configurable {
         settings.showOther = component.showOther()
         settings.includedExtensions = component.getIncludedExtensions()
         settings.excludedExtensions = component.getExcludedExtensions()
-        println("included ${component.getIncludedExtensions()}")
-        println("excluded ${component.getExcludedExtensions()}")
 
-//on apply reinstall all current editors
-//        when installing editors - check if only VCS is selected
+        InspectionLensPluginListener().reload()
     }
 
     override fun reset() {
